@@ -6,6 +6,8 @@ import android.content.Context
 import android.text.format.DateUtils
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -134,6 +136,7 @@ fun WizardClipApp(viewModel: WizardClipViewModel) {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun HistoryScreen(viewModel: WizardClipViewModel) {
     val context = LocalContext.current
@@ -181,7 +184,13 @@ private fun HistoryScreen(viewModel: WizardClipViewModel) {
             }
         }
         item {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            // FlowRow (not Row): on a narrow phone the three buttons wrap
+            // onto a second line instead of squeezing "Save as snippet"
+            // into a narrow vertical column.
+            FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
                 Button(
                     onClick = {
                         val pasted = readClipboardText(context)
@@ -727,7 +736,7 @@ private fun SettingsScreen(viewModel: WizardClipViewModel) {
                 )
                 Spacer(Modifier.height(6.dp))
                 Text(
-                    "WizardClip 1.0.0 · Bigwizard Media · Open source (MIT)",
+                    "WizardClip 1.0.1 · Bigwizard Media · Open source (MIT)",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
