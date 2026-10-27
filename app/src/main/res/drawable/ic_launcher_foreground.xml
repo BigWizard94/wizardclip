@@ -1,0 +1,28 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Clipboard board -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M24,22 L84,22 L84,92 L24,92 Z" />
+    <!-- Clip -->
+    <path
+        android:fillColor="#14B8A6"
+        android:pathData="M42,12 L66,12 L66,26 L42,26 Z" />
+    <!-- Lines -->
+    <path
+        android:fillColor="#14B8A6"
+        android:pathData="M32,38 L76,38 L76,46 L32,46 Z" />
+    <path
+        android:fillColor="#14B8A6"
+        android:pathData="M32,52 L76,52 L76,60 L32,60 Z" />
+    <path
+        android:fillColor="#6D28D9"
+        android:pathData="M32,66 L60,66 L60,74 L32,74 Z" />
+    <!-- Star -->
+    <path
+        android:fillColor="#14B8A6"
+        android:pathData="M70,68 L72.5,74.5 L79.5,74.5 L74,78.5 L76,85.5 L70,81.5 L64,85.5 L66,78.5 L60.5,74.5 L67.5,74.5 Z" />
+</vector>
