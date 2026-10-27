@@ -1,10 +1,14 @@
-# Release checklist (draft — no publishing action taken)
+# Release checklist
 
-Status of v1.0.1 in this change: button-layout fix, version bump
-(versionCode 2 / versionName 1.0.1), `CHANGELOG.md`, and `PRIVACY.md`
-are done; the GitHub Actions debug build must be green before any
-release. Device testing is for Chase — this app has not been tested
-on a device or emulator by the builder.
+Status of v1.0.1: button-layout fix, version bump (versionCode 2 /
+versionName 1.0.1), `CHANGELOG.md`, and `PRIVACY.md` are done.
+Rolling auto-publish is implemented in
+`.github/workflows/build.yml`: after every successful push to `main`,
+CI updates one rolling `latest` prerelease (debug-signed preview,
+never a stable release) with `WizardClip-debug.apk` and its `.sha256`
+file, using only the built-in `GITHUB_TOKEN`. Device testing is for
+Chase — this app has not been tested on a device or emulator by the
+builder.
 
 ## Remaining decisions / Chase-only items
 
@@ -16,11 +20,15 @@ on a device or emulator by the builder.
 - [ ] Release signing in CI: add the keystore to GitHub Actions
       secrets and a release build workflow only after the keystore
       exists and is backed up.
-- [ ] Distribution decision: GitHub Release (free, direct download)
-      vs F-Droid submission (free, needs fastlane metadata and
-      review) vs Google Play ($25 developer registration fee).
-      Play was previously skipped for another Bigwizard Media app
-      over the fee — confirm before assuming it.
+- [ ] Distribution decision (partly done): the rolling GitHub
+      `latest` prerelease is live for direct downloads. Still open:
+      F-Droid submission (free, needs fastlane metadata and review)
+      vs Google Play ($25 developer registration fee). Play was
+      previously skipped for another Bigwizard Media app over the
+      fee — confirm before assuming it. Versioned stable releases
+      (`v*` tags) and release-signed builds remain separate future
+      decisions; the rolling prerelease must never be presented as
+      a stable release.
 - [ ] Screenshots for store listings: phone screenshots of History,
       Snippets, Devices, and Settings, plus an app icon / feature
       graphic if a store listing requires one.
@@ -35,5 +43,7 @@ on a device or emulator by the builder.
 
 - Do not add an INTERNET or other network permission to the v1
   local-only build.
-- Do not publish a release, submit to a store, or auto-publish from
-  CI until the items above are decided.
+- Do not submit to a store, create a versioned stable release, or
+  attach a release-signed APK until the items above are decided.
+  (The rolling `latest` debug prerelease is the one publishing
+  exception, chosen by Chase.)

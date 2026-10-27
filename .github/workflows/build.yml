@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [main]
 
+# Needed so the publish step can create/update the rolling `latest`
+# prerelease with the built-in GITHUB_TOKEN. No other token is used.
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -39,3 +44,41 @@ jobs:
           name: wizardclip-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+
+      # Rolling prerelease: one `latest` prerelease, updated after every
+      # successful push to main, so the newest APK is always downloadable
+      # from a stable URL. Never a stable release, never release-signed.
+      # Runs only on push to main (not pull_request) and only if the
+      # test and build steps above succeeded. Uses only the built-in
+      # GITHUB_TOKEN; no other token or secret is used here.
+      - name: Publish rolling latest prerelease
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          cp app/build/outputs/apk/debug/app-debug.apk WizardClip-debug.apk
+          sha256sum WizardClip-debug.apk > WizardClip-debug.apk.sha256
+          SHA256=$(cut -d' ' -f1 WizardClip-debug.apk.sha256)
+          VERSION_NAME=$(grep -E 'versionName' app/build.gradle.kts | sed -E 's/.*versionName = "([^"]+)".*/\1/')
+          VERSION_CODE=$(grep -E 'versionCode' app/build.gradle.kts | sed -E 's/.*versionCode = ([0-9]+).*/\1/')
+          cat > LATEST-NOTES.md <<EOF
+          Debug-signed preview build - NOT a stable release.
+
+          WizardClip $VERSION_NAME (versionCode $VERSION_CODE), commit $GITHUB_SHA.
+          Local-only v1: clips stay on the device, no account, no ads, no tracking, no network permission. Sync is not in this build yet; it is coming in a later update.
+
+          SHA-256 (WizardClip-debug.apk):
+          $SHA256
+
+          Install: download WizardClip-debug.apk, allow install from unknown sources / sideloading when Android asks, then open the APK to install. This build is debug-signed, not release-signed.
+
+          Source and details: https://github.com/BigWizard94/wizardclip#readme
+          This rolling prerelease is updated automatically after every successful push to main. Versioned stable releases, if any, will be separate v* tags.
+          EOF
+          if gh release view latest >/dev/null 2>&1; then
+            gh release edit latest --prerelease --title "Latest debug build" --notes-file LATEST-NOTES.md
+            gh release upload latest WizardClip-debug.apk WizardClip-debug.apk.sha256 --clobber
+          else
+            gh release create latest WizardClip-debug.apk WizardClip-debug.apk.sha256 --prerelease --title "Latest debug build" --notes-file LATEST-NOTES.md
+          fi

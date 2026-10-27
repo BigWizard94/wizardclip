@@ -6,6 +6,22 @@ WizardClip keeps a searchable history of your clips, pinned clips, and
 reusable snippets — locally, on your device, with no account, no ads,
 no tracking, and no analytics.
 
+## Latest build
+
+Debug-signed preview build, updated automatically after every
+successful push to `main` as one rolling prerelease (not a stable
+release). This is the fastest way to get the newest APK without
+waiting for anyone to relay it.
+
+- Release page: https://github.com/BigWizard94/wizardclip/releases/tag/latest
+- Direct APK download: https://github.com/BigWizard94/wizardclip/releases/download/latest/WizardClip-debug.apk
+
+Install: download the APK, allow install from unknown sources /
+sideloading when Android asks, then open the APK to install. The
+checksum file `WizardClip-debug.apk.sha256` is attached to the same
+prerelease. Versioned stable releases, if any, will be separate `v*`
+tags.
+
 ## Features (v1, local-only)
 
 - Clipboard history: add a clip by typing, with **Paste from Clipboard**,
